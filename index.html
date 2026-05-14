@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Latar belakang pink yang lebih nyata */
+            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .glass-card {
+            /* Latar belakang kartu tetap putih bersih agar kontras */
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .fade-in {
+            animation: fadeIn 1.2s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .flower-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1;
+            user-select: none;
+        }
+
+        .animate-blob {
+            animation: blob 7s infinite;
+        }
+
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="p-4">
+
+    <!-- Ornamen dekoratif latar belakang -->
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10">
+        <div class="absolute top-1/4 -left-20 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob"></div>
+        <div class="absolute bottom-1/4 -right-20 w-80 h-80 bg-white rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob" style="animation-delay: 2s;"></div>
+    </div>
+
+    <div class="max-w-md w-full glass-card rounded-[2.5rem] p-8 md:p-12 text-center fade-in relative">
+        
+        <div class="relative z-10">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-pink-100 text-pink-600 text-xs font-bold tracking-widest mb-6 uppercase border border-pink-200">
+                A Message for You
+            </span>
+            
+            <h1 class="title-font text-4xl md:text-5xl text-gray-800 leading-tight mb-3 italic">
+                Selamat Ulang Tahun
+            </h1>
+            
+            <!-- GANTI NAMA DI SINI -->
+            <h2 class="text-2xl font-light text-gray-500 mb-8 tracking-wide">Kiara ✨</h2>
+
+            <div id="initial-view" class="space-y-8">
+                <div class="w-28 h-28 bg-gradient-to-br from-pink-200 to-pink-50 rounded-full mx-auto flex items-center justify-center shadow-inner floating">
+                    <!-- Flower Icon SVG -->
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 12C12 12 12 8 15 8C18 8 18 12 15 12C18 12 18 16 15 16C12 16 12 12 12 12Z" fill="#F472B6"/>
+                        <path d="M12 12C12 12 12 8 9 8C6 8 6 12 9 12C6 12 6 16 9 16C12 16 12 12 12 12Z" fill="#F472B6"/>
+                        <path d="M12 12C12 12 16 12 16 9C16 6 12 6 12 9C12 6 8 6 8 9C8 12 12 12 12 12Z" fill="#F472B6"/>
+                        <path d="M12 12C12 12 16 12 16 15C16 18 12 18 12 15C12 18 8 18 8 15C8 12 12 12 12 12Z" fill="#F472B6"/>
+                        <circle cx="12" cy="12" r="2" fill="#FBBF24"/>
+                    </svg>
+                </div>
+                
+                <p class="text-gray-500 italic font-light">
+                    "Ada pesan kecil yang ingin aku sampaikan..."
+                </p>
+
+                <button onclick="revealMessage()" class="w-full bg-pink-500 hover:bg-pink-600 text-white py-4 rounded-2xl transition-all duration-500 transform hover:scale-[1.03] active:scale-95 shadow-lg shadow-pink-200 font-semibold tracking-wide">
+                    Buka Pesan
+                </button>
+            </div>
+
+            <div id="message-view" class="hidden space-y-6">
+                <div class="p-6 bg-pink-50 bg-opacity-50 rounded-3xl text-left border border-pink-100 shadow-sm">
+                    <p id="message-content" class="text-gray-700 leading-relaxed text-lg font-light whitespace-pre-line"></p>
+                </div>
+                
+                <div class="pt-6 border-t border-gray-100">
+                    <p class="text-xs text-gray-400 uppercase tracking-widest mb-4">Sent with peace</p>
+                    <button onclick="resetView()" class="text-pink-500 text-sm font-medium hover:text-pink-700 transition-colors uppercase tracking-tighter">
+                        ← Putar Kembali
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const messageText = "HALOOOOOO \n\nHAPPPY SWEET 17 ARAA kowakoawkoawokwaok \n\nSemoga tahun ini dan tahun-tahun selanjutnya membawa banyak kebahagiaan, kesehatan, dan kesuksesan untuk kamu ya.\n\nHadiah ini juga bukan maksud mau balikan atau apa-apa, chill aman aja wkkwwkwkwk, gimana bison ki? udah se biggie biggie apa dia sekarang wkwkwk \n\ Have a nice day :)";
+
+        const flowers = ['🌸', '🌼', '🌷', '🌻', '🌺', '🍃'];
+
+        function createFlower() {
+            const flower = document.createElement('div');
+            flower.className = 'flower-particle';
+            flower.innerHTML = flowers[Math.floor(Math.random() * flowers.length)];
+            
+            const startX = Math.random() * window.innerWidth;
+            const size = Math.random() * 20 + 20;
+            const duration = Math.random() * 5 + 5;
+            
+            flower.style.left = startX + 'px';
+            flower.style.top = '-50px';
+            flower.style.fontSize = size + 'px';
+            flower.style.opacity = Math.random() * 0.5 + 0.3;
+            
+            document.body.appendChild(flower);
+
+            const animation = flower.animate([
+                { transform: `translate(0, 0) rotate(0deg)`, opacity: flower.style.opacity },
+                { transform: `translate(${Math.random() * 100 - 50}px, ${window.innerHeight + 50}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+            ], {
+                duration: duration * 1000,
+                easing: 'linear'
+            });
+
+            animation.onfinish = () => flower.remove();
+        }
+
+        setInterval(createFlower, 800);
+
+        function revealMessage() {
+            document.getElementById('initial-view').classList.add('hidden');
+            
+            const messageElement = document.getElementById('message-content');
+            messageElement.textContent = messageText;
+
+            const msgView = document.getElementById('message-view');
+            msgView.classList.remove('hidden');
+            msgView.classList.add('fade-in');
+
+            confetti({
+                particleCount: 120,
+                spread: 80,
+                origin: { y: 0.6 },
+                colors: ['#F472B6', '#FBBF24', '#ffffff', '#FDA4AF']
+            });
+        }
+
+        function resetView() {
+            document.getElementById('message-view').classList.add('hidden');
+            document.getElementById('initial-view').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
